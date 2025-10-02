@@ -2,10 +2,10 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5434/blog_db
     username: blog_user
-    password: blog_secret
+    password: secret
   jpa:
     hibernate:
-      ddl-auto: update  # development için
+      ddl-auto: update  # development iï¿½in
     properties:
       hibernate:
         format_sql: true
