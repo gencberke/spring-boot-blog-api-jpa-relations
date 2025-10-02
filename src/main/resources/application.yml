@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/blog_db
+    username: blog_user
+    password: blog_secret
+  jpa:
+    hibernate:
+      ddl-auto: update  # development için
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    open-in-view: false
+  jackson:
+    date-format: "yyyy-MM-dd'T'HH:mm:ss"
+    time-zone: "Europe/Istanbul"
+
+server:
+  port: 8081
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
