@@ -20,7 +20,7 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tag_seq")
-    @SequenceGenerator(name = "tag_seq", sequenceName = "tag_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "tag_seq", sequenceName = "tag_id_seq")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -31,7 +31,7 @@ public class Tag {
     
     private LocalDateTime updatedAt;
 
-    // Many-to-Many: Tag ↔ Posts (Inverse side)
+    // ManyToMany: Tag <--> Posts (Inverse side)
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
 

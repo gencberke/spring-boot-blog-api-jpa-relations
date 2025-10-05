@@ -18,7 +18,7 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_seq")
-    @SequenceGenerator(name = "comment_seq", sequenceName = "comment_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "comment_seq", sequenceName = "comment_id_seq")
     private Long id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -28,12 +28,12 @@ public class Comment {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Many-to-One: Comment → User
+    // ManyToOne: Comment -> User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User author;
 
-    // Many-to-One: Comment → Post
+    // ManyToOne: Comment -> Post
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
