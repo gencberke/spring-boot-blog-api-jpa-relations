@@ -22,9 +22,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByAuthorId(Long authorId);
 
-    @Query("SELECT COUNT(p) FROM Post p WHERE p.author.id = :authorId AND p.published = :published")
-    long countPublishedPostsByAuthor(@Param("authorId") Long authorId, 
-                                      @Param("published") boolean published);
+    List<Post> findByAuthorIdAndPublishedTrue(Long authorId);
+    List<Post> findByAuthorIdAndPublishedFalse(Long authorId);
+
+    long countByAuthorIdAndPublishedTrue(Long authorId);
+    long countByAuthorIdAndPublishedFalse(Long authorId);
 
     List<Post> findByCategoryId(Long categoryId);
     List<Post> findByPublishedAndCategoryId(boolean published, Long categoryId);
