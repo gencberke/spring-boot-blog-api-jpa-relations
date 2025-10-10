@@ -39,7 +39,6 @@ public class Post {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
