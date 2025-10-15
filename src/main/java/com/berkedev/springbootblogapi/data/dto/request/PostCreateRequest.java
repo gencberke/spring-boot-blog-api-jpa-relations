@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class PostCreateRequest {
+
     /**
      * Only needed in post persist operations, fields below enough to create a new post
      */
@@ -38,6 +39,7 @@ public class PostCreateRequest {
     /**
      * We will just take IDs of these entities from client and match them in service layer
      */
+
     @NotNull(message = "Category is required")
     private Long categoryId;
     
