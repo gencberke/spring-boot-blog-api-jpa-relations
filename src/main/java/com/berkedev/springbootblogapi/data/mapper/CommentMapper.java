@@ -34,9 +34,7 @@ public class CommentMapper {
         if (createRequest == null)
             return null;
 
-        return Comment.builder()
-                .content(createRequest.getContent())
-                // author and post will be set in service
-                .build();
+        return new Comment(createRequest.getContent());
+        // author and post will be set in service
     }
 }
