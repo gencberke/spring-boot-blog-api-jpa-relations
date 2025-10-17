@@ -4,11 +4,9 @@ import com.berkedev.springbootblogapi.data.dto.request.UserCreateRequest;
 import com.berkedev.springbootblogapi.data.dto.request.UserUpdateRequest;
 import com.berkedev.springbootblogapi.data.dto.response.UserResponse;
 import com.berkedev.springbootblogapi.data.entity.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor // for nested mapper injection on other mappers
 public class UserMapper {
 
     public UserResponse toResponse(User user) {
