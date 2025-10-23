@@ -21,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse create(CategoryCreateRequest createRequest) {
         if (categoryRepository.existsByName(createRequest.getName())) {
-            throw new IllegalArgumentException("Category with given name already exists.");
+            throw new RuntimeException("Category with given name already exists.");
         }
 
         Category category = categoryMapper.toEntity(createRequest);
