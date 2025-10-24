@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userRepository.existsByEmail(createRequest.getEmail())) {
-            throw new IllegalArgumentException("Email already exists: " + createRequest.getUsername());
+            throw new IllegalArgumentException("Email already exists: " + createRequest.getEmail());
         }
 
         User user = userMapper.toEntity(createRequest);
@@ -51,6 +51,14 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    /**
+     * JPA DIRTY CHECKING :
+     * JPA tracks changes on managed entities and auto-updates on transaction commit.
+     * But BEST PRACTICE is to use explicit save() for clarity and maintainability.
+     * Why explicit save()?
+     * - Clear and readable code
+     * - Spring Boot recommendation
+     */
     @Override
     public UserResponse update(Long id, UserUpdateRequest updateRequest) {
         User user = userRepository.findById(id)
