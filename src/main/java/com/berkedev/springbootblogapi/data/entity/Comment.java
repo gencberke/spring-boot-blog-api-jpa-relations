@@ -36,6 +36,11 @@ public class Comment {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    // Constructor for mapper
+    public Comment(String content) {
+        this.content = content;
+    }
+
     @PrePersist
     void onCreate() {
         if (createdAt == null) {

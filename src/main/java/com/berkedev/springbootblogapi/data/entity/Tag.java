@@ -33,6 +33,11 @@ public class Tag {
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
 
+    // Constructor for mapper
+    public Tag(String name) {
+        this.name = name;
+    }
+
     @PrePersist
     void onCreate() {
         if (createdAt == null) {
