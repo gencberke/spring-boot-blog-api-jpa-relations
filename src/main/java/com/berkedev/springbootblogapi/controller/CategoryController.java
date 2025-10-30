@@ -24,7 +24,7 @@ public class CategoryController {
      */
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAll() {
-        return ResponseEntity.ok(categoryService.getAll());
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getAll());
     }
 
     @GetMapping("/{id}")
@@ -37,7 +37,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.getByName(name));
     }
     @GetMapping("/search")
-    public ResponseEntity<List<CategoryResponse>> search(@RequestParam String keyword) {
+    public ResponseEntity<List<CategoryResponse>> search(@RequestParam("keyword") String keyword) {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.search(keyword));
     }
 
