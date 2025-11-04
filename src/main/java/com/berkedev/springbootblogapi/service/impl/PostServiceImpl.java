@@ -12,6 +12,7 @@ import com.berkedev.springbootblogapi.data.repository.CategoryRepository;
 import com.berkedev.springbootblogapi.data.repository.PostRepository;
 import com.berkedev.springbootblogapi.data.repository.TagRepository;
 import com.berkedev.springbootblogapi.data.specification.PostSpecification;
+import com.berkedev.springbootblogapi.exception.BadRequestException;
 import com.berkedev.springbootblogapi.exception.DuplicateResourceException;
 import com.berkedev.springbootblogapi.exception.ResourceNotFoundException;
 import com.berkedev.springbootblogapi.service.PostService;
@@ -136,6 +137,9 @@ public class PostServiceImpl implements PostService {
     public PostResponse publish(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+
+        if (post.isPublished())
+            throw new BadRequestException("Post is already published");
 
         post.setPublished(true);
         post.setPublishedAt(LocalDateTime.now());
