@@ -5,6 +5,8 @@ import com.berkedev.springbootblogapi.data.dto.response.CategoryResponse;
 import com.berkedev.springbootblogapi.data.entity.Category;
 import com.berkedev.springbootblogapi.data.mapper.CategoryMapper;
 import com.berkedev.springbootblogapi.data.repository.CategoryRepository;
+import com.berkedev.springbootblogapi.exception.DuplicateResourceException;
+import com.berkedev.springbootblogapi.exception.ResourceNotFoundException;
 import com.berkedev.springbootblogapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse create(CategoryCreateRequest createRequest) {
         if (categoryRepository.existsByName(createRequest.getName())) {
-            throw new RuntimeException("Category with given name already exists.");
+            throw new DuplicateResourceException("Category", createRequest.getName());
         }
 
         Category category = categoryMapper.toEntity(createRequest);
@@ -33,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse getById(Long id) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with given id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
 
         return categoryMapper.toResponse(category);
     }
@@ -49,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new IllegalArgumentException("Category not found with given id: " + id);
+            throw new ResourceNotFoundException("Category", "id", id);
         }
 
         categoryRepository.deleteById(id);
@@ -58,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse getByName(String name) {
         Category category = categoryRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Category with given name not found: " + name));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "name",  name));
 
         return categoryMapper.toResponse(category);
     }

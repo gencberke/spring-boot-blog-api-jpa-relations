@@ -10,6 +10,7 @@ import com.berkedev.springbootblogapi.data.mapper.CommentMapper;
 import com.berkedev.springbootblogapi.data.repository.CommentRepository;
 import com.berkedev.springbootblogapi.data.repository.PostRepository;
 import com.berkedev.springbootblogapi.data.repository.UserRepository;
+import com.berkedev.springbootblogapi.exception.ResourceNotFoundException;
 import com.berkedev.springbootblogapi.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponse getById(Long id) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
 
         return commentMapper.toResponse(comment);
     }
@@ -53,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void delete(Long id) {
         if (!commentRepository.existsById(id)) {
-            throw new IllegalArgumentException("Comment not found with id: " + id);
+            throw new ResourceNotFoundException("Comment", "id", id);
         }
 
         commentRepository.deleteById(id);

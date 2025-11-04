@@ -12,6 +12,8 @@ import com.berkedev.springbootblogapi.data.repository.CategoryRepository;
 import com.berkedev.springbootblogapi.data.repository.PostRepository;
 import com.berkedev.springbootblogapi.data.repository.TagRepository;
 import com.berkedev.springbootblogapi.data.specification.PostSpecification;
+import com.berkedev.springbootblogapi.exception.DuplicateResourceException;
+import com.berkedev.springbootblogapi.exception.ResourceNotFoundException;
 import com.berkedev.springbootblogapi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,11 +39,11 @@ public class PostServiceImpl implements PostService {
         // User author = getCurrentAuthenticatedUser();
 
         if(postRepository.existsBySlug(createRequest.getSlug())) {
-            throw new IllegalArgumentException("Slug already exists." + createRequest.getSlug());
+            throw new DuplicateResourceException("Slug", createRequest.getSlug());
         }
 
         Category category = categoryRepository.findById(createRequest.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", createRequest.getCategoryId()));
 
         List<Tag> tags = tagRepository.findAllById(createRequest.getTagIds());
 
@@ -62,7 +64,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse getById(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post with given id not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 
         return postMapper.toResponse(post);
     }
@@ -90,17 +92,17 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse update(Long id, PostUpdateRequest updateRequest) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post with given id not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 
         if (updateRequest.getSlug() != null &&
             postRepository.existsBySlug(updateRequest.getSlug()) &&
             !post.getSlug().equals(updateRequest.getSlug())) {
-            throw new RuntimeException("Slug already exists.");
+            throw new DuplicateResourceException("Slug", updateRequest.getSlug());
         }
 
         if (updateRequest.getCategoryId() != null) {
             Category category = categoryRepository.findById(updateRequest.getCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("Category not found with given id: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Category", "id", updateRequest.getCategoryId()));
             post.setCategory(category);
         }
 
@@ -127,13 +129,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public void delete(Long id) {
         postRepository.delete(postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post with given id not found: " + id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id)));
     }
 
     @Override
     public PostResponse publish(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post with given id not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 
         post.setPublished(true);
         post.setPublishedAt(LocalDateTime.now());
@@ -145,7 +147,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse unpublish(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post with given id not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 
         post.setPublished(false);
         post.setPublishedAt(null);

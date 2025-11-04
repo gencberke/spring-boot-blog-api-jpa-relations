@@ -5,6 +5,8 @@ import com.berkedev.springbootblogapi.data.dto.response.TagResponse;
 import com.berkedev.springbootblogapi.data.entity.Tag;
 import com.berkedev.springbootblogapi.data.mapper.TagMapper;
 import com.berkedev.springbootblogapi.data.repository.TagRepository;
+import com.berkedev.springbootblogapi.exception.DuplicateResourceException;
+import com.berkedev.springbootblogapi.exception.ResourceNotFoundException;
 import com.berkedev.springbootblogapi.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponse create(TagCreateRequest createRequest) {
         if (tagRepository.existsByName(createRequest.getName())) {
-            throw new RuntimeException("Tag with given name already exists: " + createRequest.getName());
+            throw new DuplicateResourceException("Tag", createRequest.getName());
         }
 
         Tag tag = tagMapper.toEntity(createRequest);
@@ -33,7 +35,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponse getById(Long id) {
         Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tag with given id not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Tag", "id", id));
 
         return tagMapper.toResponse(tag);
     }
@@ -50,7 +52,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void delete(Long id) {
         if (!tagRepository.existsById(id)) {
-            throw new IllegalArgumentException("Tag with given id not found: " + id);
+            throw new ResourceNotFoundException("Tag","id", id);
         }
 
         tagRepository.deleteById(id);
@@ -59,7 +61,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponse getByName(String name) {
         Tag tag = tagRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Tag with given name not found: " + name));
+                .orElseThrow(() -> new ResourceNotFoundException("Tag", "name", name));
 
         return tagMapper.toResponse(tag);
     }
