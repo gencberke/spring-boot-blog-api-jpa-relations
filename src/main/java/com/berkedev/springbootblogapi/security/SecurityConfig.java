@@ -5,29 +5,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Spring Security Configuration. The BOSS class for all security implementation
+ * Spring Security Configuration.
  * 
  * Configures:
  * - JWT authentication filter
  * - Endpoint authorization rules
  * - Password encoding (BCrypt)
  * - Stateless session management
- * - Authentication provider
  * 
  * Security Features:
  * - JWT token-based authentication
@@ -35,6 +31,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * - BCrypt password hashing
  * - Stateless architecture (no sessions)
  * - CSRF disabled (using JWT)
+ * 
+ * Note: AuthenticationProvider is autoconfigured by Spring Security 6
+ * when UserDetailsService and PasswordEncoder beans are present.
  */
 @Configuration
 @EnableWebSecurity
@@ -43,7 +42,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
-    private final UserDetailsService userDetailsService;
 
     /**
      * Configures HTTP security (filter chain and authorization rules).
@@ -89,30 +87,10 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 
-                // Set authentication provider
-                .authenticationProvider(authenticationProvider())
-                
                 // Add JWT filter before UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    /**
-     * Configures authentication provider.
-     * 
-     * DaoAuthenticationProvider uses:
-     * - UserDetailsService to load user from database
-     * - PasswordEncoder to verify password
-     * 
-     * @return AuthenticationProvider configured authentication provider
-     */
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
     }
 
     /**
@@ -122,6 +100,8 @@ public class SecurityConfig {
      * - One-way hashing (cannot be reversed)
      * - Salt generation (different hash for same password)
      * - Slow by design (prevents brute force attacks)
+     * 
+     * Spring Security 6 automatically uses this bean for authentication.
      * 
      * @return PasswordEncoder BCrypt password encoder
      */
@@ -134,14 +114,16 @@ public class SecurityConfig {
      * Authentication manager bean.
      * 
      * Used by AuthController for login authentication.
-     * Delegates to AuthenticationProvider for actual authentication.
+     * Spring Security 6 automatically configures this when UserDetailsService
+     * and PasswordEncoder beans are present.
      * 
      * @param config AuthenticationConfiguration Spring's authentication configuration
      * @return AuthenticationManager authentication manager
      * @throws Exception if configuration fails
      */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) 
+            throws Exception {
         return config.getAuthenticationManager();
     }
 }
