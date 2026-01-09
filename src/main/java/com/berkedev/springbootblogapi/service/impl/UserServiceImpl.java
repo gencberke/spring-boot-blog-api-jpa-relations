@@ -10,6 +10,7 @@ import com.berkedev.springbootblogapi.exception.DuplicateResourceException;
 import com.berkedev.springbootblogapi.exception.ResourceNotFoundException;
 import com.berkedev.springbootblogapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse create(UserCreateRequest createRequest) {
@@ -32,6 +34,11 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userMapper.toEntity(createRequest);
+        
+        // Hash password with BCrypt before saving
+        String hashedPassword = passwordEncoder.encode(createRequest.getPassword());
+        user.setPassword(hashedPassword);
+        
         User saved = userRepository.save(user);
 
         return userMapper.toResponse(saved);

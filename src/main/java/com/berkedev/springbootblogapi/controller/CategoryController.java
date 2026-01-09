@@ -4,6 +4,7 @@ import com.berkedev.springbootblogapi.data.dto.request.CategoryCreateRequest;
 import com.berkedev.springbootblogapi.data.dto.response.CategoryResponse;
 import com.berkedev.springbootblogapi.service.CategoryService;
 import jakarta.validation.Valid;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

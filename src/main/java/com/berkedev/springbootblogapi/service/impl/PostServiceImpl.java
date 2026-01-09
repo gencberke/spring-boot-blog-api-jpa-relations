@@ -7,6 +7,7 @@ import com.berkedev.springbootblogapi.data.dto.response.PostResponse;
 import com.berkedev.springbootblogapi.data.entity.Category;
 import com.berkedev.springbootblogapi.data.entity.Post;
 import com.berkedev.springbootblogapi.data.entity.Tag;
+import com.berkedev.springbootblogapi.data.entity.User;
 import com.berkedev.springbootblogapi.data.mapper.PostMapper;
 import com.berkedev.springbootblogapi.data.repository.CategoryRepository;
 import com.berkedev.springbootblogapi.data.repository.PostRepository;
@@ -18,6 +19,8 @@ import com.berkedev.springbootblogapi.exception.ResourceNotFoundException;
 import com.berkedev.springbootblogapi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,8 +39,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse create(PostCreateRequest createRequest) {
-        // TODO: Get authenticated user after spring security
-        // User author = getCurrentAuthenticatedUser();
+        // Get current authenticated user from SecurityContext
+        User author = getCurrentAuthenticatedUser();
 
         if(postRepository.existsBySlug(createRequest.getSlug())) {
             throw new DuplicateResourceException("Slug", createRequest.getSlug());
@@ -50,6 +53,8 @@ public class PostServiceImpl implements PostService {
 
         Post post = postMapper.toEntity(createRequest);
 
+        // Set author (current authenticated user)
+        post.setAuthor(author);
         post.setCategory(category);
         post.setTags(tags);
 
@@ -60,6 +65,16 @@ public class PostServiceImpl implements PostService {
         Post saved = postRepository.save(post);
 
         return postMapper.toResponse(saved);
+    }
+
+    /**
+     * Helper method to get current authenticated user from SecurityContext.
+     * 
+     * @return User current authenticated user
+     */
+    private User getCurrentAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 
     @Override
