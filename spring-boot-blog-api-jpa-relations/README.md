@@ -2,6 +2,19 @@
 
 A comprehensive RESTful Blog API built with Spring Boot 3.5.6, Java 21, PostgreSQL, and JWT authentication. This project demonstrates enterprise-level backend development with clean architecture, security best practices, and complete CRUD operations for a modern blogging platform.
 
+## 🛠️ Tech Stack
+
+- **Spring Boot 3.5.6**
+- **Java 21**
+- **PostgreSQL 16**
+- **Spring Security 6.x**
+- **JWT (JJWT 0.12.5)**
+- **Spring Data JPA**
+- **Hibernate**
+- **Lombok**
+- **Maven**
+- **Docker**
+- 
 ## 🚀 Features
 
 - **JWT Authentication**: Secure token-based authentication with BCrypt password hashing
@@ -15,19 +28,6 @@ A comprehensive RESTful Blog API built with Spring Boot 3.5.6, Java 21, PostgreS
 - **Docker Support**: PostgreSQL setup with Docker Compose
 - **Automatic Timestamps**: CreatedAt and UpdatedAt fields with JPA lifecycle hooks
 - **SEO Friendly**: Slug-based post URLs for better search engine optimization
-
-## 🛠️ Tech Stack
-
-- **Spring Boot 3.5.6**
-- **Java 21**
-- **PostgreSQL 16**
-- **Spring Security 6.x**
-- **JWT (JJWT 0.12.5)**
-- **Spring Data JPA**
-- **Hibernate**
-- **Lombok**
-- **Maven**
-- **Docker**
 
 ## 🗃️ Project Structure
 ```
